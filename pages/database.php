@@ -13,6 +13,7 @@ if(!isset($_POST['string'])){
 	echo "<h1>Строка не найдена</h1>";
 }
 else{
+	//test
 	$db = new mysqli("localhost", "root", "", "test");
 	if(!$db){
 		echo "<p>Ошибка: Невозможно установить соединение с MySQL."
@@ -25,18 +26,19 @@ if($doit){
 	$string = $_POST['string'];
 	$subjects=[];
 	getStr($string,$subjects);
-	if(($p = $db->prepare("INSERT IGNORE INTO `subjects`(`String`) VALUES (?)"))){
+	if(($p = $db->prepare("INSERT IGNORE INTO `Subjects`(`String`) VALUES (?)"))){
 		$str = "";
 		$p->bind_param("s", $str);
 		foreach($subjects as $value){
 			$str = $value;
 			$p->execute();
+			
 		}
 		unset($subjects);
 		echo "<p>Данные сохранены в БД</p>";
 	}
 	else{
-		echo "<p>Ошибка при подготовке запроса</p>";
+		echo "<p>Ошибка при подготовке запроса(" . $db->errno . ") " . $db->error."</p>";
 	}
 	echo "<h2>Уже есть</h2>";
 }
@@ -47,7 +49,7 @@ if($doit){
 				<th>Предложение</th>
 			</tr>
 			<?php
-			if(($sel = $db->query("SELECT * FROM subjects"))){
+			if(($sel = $db->query("SELECT * FROM Subjects"))){
 				while(($row=$sel->fetch_assoc())){
 					echo "<tr>"
 						."<td>".$row["id"]."</td>"
